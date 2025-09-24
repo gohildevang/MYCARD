@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-32$6tiw$zb1fv0-7&#0uey$6)h5-g(uhbu#m+%mn=9-1h#6$&c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yoocard.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
