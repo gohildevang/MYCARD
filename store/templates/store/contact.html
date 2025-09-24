@@ -1,0 +1,335 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Contact Us - My Card{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="about-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-4 fade-in">Get in Touch</h1>
+                <p class="lead mb-4 fade-in-up">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+                <div class="fade-in-up">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Call Us</h6>
+                            <p class="mb-0 opacity-75">+1 (555) 123-4567</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Email Us</h6>
+                            <p class="mb-0 opacity-75">support@mycard.com</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Business Hours</h6>
+                            <p class="mb-0 opacity-75">Mon - Fri: 9AM - 6PM EST</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="position-relative">
+                    <i class="fas fa-comments fa-10x opacity-25"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Form Section -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 scroll-animate">
+            <div class="contact-form">
+                <h3 class="text-gradient mb-4">Send us a Message</h3>
+                <form id="contactForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="firstName" name="first_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" id="lastName" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <select class="form-control" id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="support">Customer Support</option>
+                            <option value="orders">Order Related</option>
+                            <option value="returns">Returns & Refunds</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="feedback">Feedback</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea class="form-control" id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter">
+                            <label class="form-check-label" for="newsletter">
+                                Subscribe to our newsletter for updates and special offers
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 scroll-animate">
+            <div class="contact-info">
+                <h4 class="mb-4">Contact Information</h4>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <h6>Our Address</h6>
+                        <p class="mb-0 opacity-75">123 Commerce Street<br>Business District<br>New York, NY 10001</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <h6>Phone Numbers</h6>
+                        <p class="mb-1 opacity-75">Main: +1 (555) 123-4567</p>
+                        <p class="mb-0 opacity-75">Support: +1 (555) 123-4568</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <h6>Email Addresses</h6>
+                        <p class="mb-1 opacity-75">General: info@mycard.com</p>
+                        <p class="mb-1 opacity-75">Support: support@mycard.com</p>
+                        <p class="mb-0 opacity-75">Sales: sales@mycard.com</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div>
+                        <h6>Follow Us</h6>
+                        <div class="social-icons mt-2">
+                            <a href="#" class="text-white"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5 scroll-animate">
+            <h2 class="text-gradient">Frequently Asked Questions</h2>
+            <p class="lead text-muted">Quick answers to common questions</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item border-0 mb-3 shadow-sm scroll-animate">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                <i class="fas fa-shipping-fast me-3 text-primary"></i>
+                                What are your shipping options and delivery times?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We offer free standard shipping on orders over $50, which typically takes 3-5 business days. Express shipping (1-2 days) and overnight shipping are also available for an additional fee.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 mb-3 shadow-sm scroll-animate">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                <i class="fas fa-undo me-3 text-primary"></i>
+                                What is your return policy?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We offer a 30-day hassle-free return policy. Items must be in original condition with tags attached. Simply contact our support team to initiate a return.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 mb-3 shadow-sm scroll-animate">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                <i class="fas fa-credit-card me-3 text-primary"></i>
+                                What payment methods do you accept?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and bank transfers for a secure shopping experience.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 mb-3 shadow-sm scroll-animate">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                <i class="fas fa-headset me-3 text-primary"></i>
+                                How can I track my order?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Once your order ships, you'll receive a tracking number via email. You can also log into your account to view order status and tracking information.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Section -->
+<div class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 scroll-animate">
+            <h2 class="text-gradient">Visit Our Store</h2>
+            <p class="lead text-muted">Come see us in person at our flagship location</p>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="bg-light p-5 rounded shadow-custom text-center">
+                    <i class="fas fa-map-marked-alt fa-4x text-primary mb-3"></i>
+                    <h4>Store Location</h4>
+                    <p class="text-muted mb-3">123 Commerce Street, Business District<br>New York, NY 10001</p>
+                    <p class="text-muted mb-4">
+                        <strong>Store Hours:</strong><br>
+                        Monday - Friday: 9:00 AM - 8:00 PM<br>
+                        Saturday: 10:00 AM - 6:00 PM<br>
+                        Sunday: 12:00 PM - 5:00 PM
+                    </p>
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-directions me-2"></i>Get Directions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form submission handling
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    submitBtn.disabled = true;
+    
+    // Simulate form submission (replace with actual form handling)
+    setTimeout(() => {
+        // Show success message
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success alert-dismissible fade show';
+        alert.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>
+            Thank you for your message! We'll get back to you within 24 hours.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        this.insertBefore(alert, this.firstChild);
+        
+        // Reset form
+        this.reset();
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
+        // Scroll to success message
+        alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 2000);
+});
+
+// Scroll animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.scroll-animate').forEach(el => {
+    observer.observe(el);
+});
+
+// Form validation enhancements
+const inputs = document.querySelectorAll('.form-control');
+inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
+</script>
+
+{% endblock %}

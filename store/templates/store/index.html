@@ -1,0 +1,120 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Home - My Card{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="hero-section fade-in">
+        <div class="hero-content">
+            <h1 class="display-4 mb-4">Welcome to My Card</h1>
+            <p class="lead mb-4">Discover amazing products at unbeatable prices with premium quality and exceptional service</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#categories" class="btn btn-light btn-lg"><i class="fas fa-shopping-bag me-2"></i>Shop Now</a>
+                <a href="{% url 'about' %}" class="btn btn-outline-light btn-lg"><i class="fas fa-info-circle me-2"></i>Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Features Section -->
+    <div class="row mb-5 scroll-animate">
+        <div class="col-md-4 mb-4">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h5>Free Shipping</h5>
+                <p class="text-muted">Free shipping on orders over $50</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h5>Secure Payment</h5>
+                <p class="text-muted">100% secure payment processing</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-box">
+                <div class="feature-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <h5>Easy Returns</h5>
+                <p class="text-muted">30-day hassle-free returns</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <div id="categories" class="scroll-animate">
+        <div class="text-center mb-5">
+            <h2 class="text-gradient">Shop by Categories</h2>
+            <p class="lead text-muted">Explore our wide range of premium products</p>
+        </div>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-lg-4 col-md-6 mb-4 fade-in-up">
+                <div class="card h-100">
+                    <div class="position-relative overflow-hidden">
+                        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" style="height: 250px; object-fit: cover;">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-primary">New</span>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <a href="{% url 'category_view' category.slug %}" class="text-decoration-none">{{ category.name }}</a>
+                        </h5>
+                        <p class="card-text text-muted flex-grow-1">{{ category.description|truncatewords:15 }}</p>
+                        <div class="mt-auto">
+                            <a href="{% url 'category_view' category.slug %}" class="btn btn-primary w-100">
+                                <i class="fas fa-arrow-right me-2"></i>View Products
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}    
+        </div>
+    </div>
+</div>
+
+<script>
+// Scroll animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.scroll-animate').forEach(el => {
+    observer.observe(el);
+});
+
+// Smooth scrolling
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+</script>
+
+{% endblock %}

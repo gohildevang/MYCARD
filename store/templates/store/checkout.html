@@ -1,0 +1,411 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Checkout - My Card{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="text-gradient">Secure Checkout</h2>
+        <p class="lead text-muted">Complete your order with confidence</p>
+        <div class="progress" style="height: 8px;">
+            <div class="progress-bar bg-gradient" role="progressbar" style="width: 75%"></div>
+        </div>
+        <small class="text-muted mt-2 d-block">Step 3 of 4: Payment & Billing</small>
+    </div>
+    
+    <div class="row">
+        <!-- Order Summary -->
+        <div class="col-lg-4 order-lg-2 mb-4">
+            <div class="card border-0 shadow-custom sticky-top" style="top: 2rem;">
+                <div class="card-header bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-bag me-2"></i>Order Summary
+                        <span class="badge bg-light text-dark ms-2">{{ cart_items|length }} item{{ cart_items|length|pluralize }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-items mb-3">
+                        {% for item in cart_items %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-0">{{ item.product.name|truncatechars:20 }}</h6>
+                                    <small class="text-muted">Qty: {{ item.product_qty }}</small>
+                                </div>
+                            </div>
+                            <span class="fw-medium">₹{{ item.product.selling_price|floatformat:0 }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="order-totals">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal:</span>
+                            <span>₹{{ total_price|floatformat:0 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Tax:</span>
+                            <span>₹0</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <span class="h5">Total:</span>
+                            <span class="h5 text-primary">₹{{ total_price|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Secure SSL encrypted checkout
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Checkout Form -->
+        <div class="col-lg-8 order-lg-1">
+            <div class="card border-0 shadow-custom">
+                <div class="card-body p-4">
+                    <h4 class="text-gradient mb-4">
+                        <i class="fas fa-user me-2"></i>Billing Information
+                    </h4>
+                    <form method="POST" id="checkoutForm">
+                        {% csrf_token %}
+                        
+                        <!-- Personal Information -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" name="first_name" id="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" name="last_name" id="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" name="email" id="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-control" name="phone" id="phone" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Address Information -->
+                        <h5 class="text-gradient mt-4 mb-3">
+                            <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
+                        </h5>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Street Address *</label>
+                            <textarea class="form-control" name="address" id="address" rows="3" placeholder="Enter your complete address" required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="city" class="form-label">City *</label>
+                                <input type="text" class="form-control" name="city" id="city" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="state" class="form-label">State *</label>
+                                <input type="text" class="form-control" name="state" id="state" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="pincode" class="form-label">PIN Code *</label>
+                                <input type="text" class="form-control" name="pincode" id="pincode" pattern="[0-9]{6}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="country" class="form-label">Country *</label>
+                            <input type="text" class="form-control" name="country" id="country" value="India" required>
+                        </div>
+                        
+                        <!-- Payment Methods -->
+                        <h5 class="text-gradient mt-4 mb-3">
+                            <i class="fas fa-credit-card me-2"></i>Payment Method
+                        </h5>
+                        
+                        <input type="hidden" name="payment_mode" id="payment_mode" value="">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="payment-option">
+                                    <button type="submit" class="btn btn-outline-primary btn-lg w-100 payment-btn" id="cod-btn">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-money-bill-wave me-3 fa-2x"></i>
+                                            <div class="text-start">
+                                                <div class="fw-bold">Cash on Delivery</div>
+                                                <small class="text-muted">Pay when you receive</small>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="payment-option">
+                                    <div id="paypal-button-container" class="paypal-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-lock me-1"></i>
+                                Your payment information is secure and encrypted
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
+<script>
+// Form validation and enhancement
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentModeInput = document.getElementById('payment_mode');
+    const codBtn = document.getElementById('cod-btn');
+    const form = document.getElementById('checkoutForm');
+    
+    // Form validation
+    const inputs = form.querySelectorAll('input[required], textarea[required]');
+    inputs.forEach(input => {
+        input.addEventListener('blur', validateField);
+        input.addEventListener('input', clearValidation);
+    });
+    
+    function validateField(e) {
+        const field = e.target;
+        if (field.checkValidity()) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+    }
+    
+    function clearValidation(e) {
+        const field = e.target;
+        field.classList.remove('is-invalid', 'is-valid');
+    }
+    
+    // PIN code validation
+    document.getElementById('pincode').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '').substring(0, 6);
+    });
+    
+    // Phone number validation
+    document.getElementById('phone').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9+\-\s]/g, '');
+    });
+    
+    // COD button click
+    codBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+            paymentModeInput.value = 'Cash on Delivery';
+            
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            this.disabled = true;
+            
+            // Submit form
+            setTimeout(() => {
+                form.submit();
+            }, 1000);
+        }
+    });
+    
+    function validateForm() {
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('input[required], textarea[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+        });
+        
+        if (!isValid) {
+            // Scroll to first invalid field
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+            
+            // Show error message
+            showNotification('Please fill all required fields', 'error');
+        }
+        
+        return isValid;
+    }
+    
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+});
+
+// PayPal Integration
+{% if paypal_client_id %}
+paypal.Buttons({
+    createOrder: function(data, actions) {
+        // Validate form before creating PayPal order
+        const form = document.getElementById('checkoutForm');
+        const requiredFields = form.querySelectorAll('input[required], textarea[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+            throw new Error('Please fill all required fields');
+        }
+        
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: '{{ total_price_usd|floatformat:2 }}'
+                },
+                description: 'Order from My Card Store'
+            }]
+        });
+    },
+    onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+            const form = document.getElementById('checkoutForm');
+            
+            // Set payment mode
+            document.getElementById('payment_mode').value = 'PayPal';
+            
+            // Add PayPal transaction details
+            const paypalOrderIdInput = document.createElement('input');
+            paypalOrderIdInput.type = 'hidden';
+            paypalOrderIdInput.name = 'paypal_order_id';
+            paypalOrderIdInput.value = data.orderID;
+            form.appendChild(paypalOrderIdInput);
+            
+            const paypalPayerIdInput = document.createElement('input');
+            paypalPayerIdInput.type = 'hidden';
+            paypalPayerIdInput.name = 'paypal_payer_id';
+            paypalPayerIdInput.value = details.payer.payer_id;
+            form.appendChild(paypalPayerIdInput);
+            
+            // Show success message
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success position-fixed';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
+            notification.innerHTML = '<i class="fas fa-check-circle me-2"></i>Payment successful! Processing order...';
+            document.body.appendChild(notification);
+            
+            // Submit the form
+            setTimeout(() => {
+                form.submit();
+            }, 1500);
+        });
+    },
+    onError: function(err) {
+        console.error('PayPal Error:', err);
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-danger position-fixed';
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
+        notification.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Payment failed. Please try again.';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    },
+    style: {
+        layout: 'vertical',
+        color: 'blue',
+        shape: 'rect',
+        label: 'paypal',
+        height: 55,
+        tagline: false
+    }
+}).render('#paypal-button-container');
+{% endif %}
+</script>
+
+<style>
+.payment-option {
+    transition: var(--transition);
+}
+
+.payment-btn {
+    height: 80px;
+    transition: var(--transition);
+}
+
+.payment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.paypal-container {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.is-valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+</style>
+{% endblock %}

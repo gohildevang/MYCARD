@@ -1,0 +1,289 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ product.name }} - My Card{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'category_view' product.category.slug %}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-lg-6 mb-4">
+            <div class="position-relative">
+                <img src="{{ product.product_image.url }}" class="img-fluid rounded shadow-custom" alt="{{ product.name }}" id="mainImage">
+                {% if product.original_price > product.selling_price %}
+                    <div class="position-absolute top-0 start-0 m-3">
+                        <span class="badge bg-danger fs-6">SALE</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div class="product-info">
+                <h1 class="display-6 mb-3">{{ product.name }}</h1>
+                <p class="lead text-muted mb-4">{{ product.small_description }}</p>
+                
+                <!-- Price Section -->
+                <div class="price-section mb-4 p-3 bg-light rounded">
+                    {% if product.original_price > product.selling_price %}
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-decoration-line-through text-muted h5 me-3">₹{{ product.original_price }}</span>
+                            <span class="badge bg-success">{{ product.original_price|floatformat:0|add:"-"|add:product.selling_price|floatformat:0|add:" OFF" }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="h2 text-primary mb-0">₹{{ product.selling_price }}</div>
+                    <small class="text-muted">Inclusive of all taxes</small>
+                </div>
+                
+                <!-- Availability -->
+                <div class="availability-section mb-4">
+                    <div class="d-flex align-items-center">
+                        <strong class="me-3">Availability:</strong>
+                        {% if product.quantity > 0 %}
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle me-1"></i>In Stock ({{ product.quantity }} available)
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger fs-6">
+                                <i class="fas fa-times-circle me-1"></i>Out of Stock
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Category -->
+                <div class="mb-4">
+                    <strong>Category: </strong>
+                    <a href="{% url 'category_view' product.category.slug %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-tag me-1"></i>{{ product.category.name }}
+                    </a>
+                </div>
+                
+                <!-- Quantity Selector -->
+                {% if product.quantity > 0 %}
+                <div class="quantity-section mb-4">
+                    <label class="form-label fw-bold">Quantity:</label>
+                    <div class="quantity-controls d-flex align-items-center">
+                        <button class="btn btn-outline-primary" type="button" onclick="decrementQuantity()">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="quantity" class="form-control text-center mx-2" value="1" min="1" max="{{ product.quantity }}" style="width: 80px;">
+                        <button class="btn btn-outline-primary" type="button" onclick="incrementQuantity()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <form method="POST" action="{% url 'add_to_cart' %}" class="mb-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="hidden" name="product_qty" id="hidden_qty" value="1">
+                    
+                    <div class="d-grid gap-2">
+                        {% if product.quantity > 0 %}
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </button>
+                            <button class="btn btn-success btn-lg" type="button" onclick="buyNow()">
+                                <i class="fas fa-bolt me-2"></i>Buy Now
+                            </button>
+                        {% else %}
+                            <button class="btn btn-secondary btn-lg" disabled>
+                                <i class="fas fa-times me-2"></i>Out of Stock
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
+                
+                <!-- Features -->
+                <div class="features-section">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="feature-item p-2">
+                                <i class="fas fa-shipping-fast text-primary mb-2 d-block"></i>
+                                <small class="text-muted">Free Shipping</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="feature-item p-2">
+                                <i class="fas fa-undo text-primary mb-2 d-block"></i>
+                                <small class="text-muted">Easy Returns</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="feature-item p-2">
+                                <i class="fas fa-shield-alt text-primary mb-2 d-block"></i>
+                                <small class="text-muted">Secure Payment</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Description Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                        <i class="fas fa-info-circle me-2"></i>Description
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
+                        <i class="fas fa-list me-2"></i>Specifications
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                        <i class="fas fa-star me-2"></i>Reviews
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="productTabsContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel">
+                    <div class="p-4">
+                        <h4 class="mb-3">Product Description</h4>
+                        <p class="lead">{{ product.description|default:"Detailed product description coming soon." }}</p>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="specifications" role="tabpanel">
+                    <div class="p-4">
+                        <h4 class="mb-3">Specifications</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Product Name</strong></td>
+                                        <td>{{ product.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Category</strong></td>
+                                        <td>{{ product.category.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Availability</strong></td>
+                                        <td>{{ product.quantity }} units</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SKU</strong></td>
+                                        <td>{{ product.id|stringformat:"05d" }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    <div class="p-4">
+                        <h4 class="mb-3">Customer Reviews</h4>
+                        <div class="text-center py-4">
+                            <i class="fas fa-star-half-alt fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No reviews yet. Be the first to review this product!</p>
+                            <button class="btn btn-primary">Write a Review</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function incrementQuantity() {
+    var quantityInput = document.getElementById('quantity');
+    var hiddenQty = document.getElementById('hidden_qty');
+    var currentValue = parseInt(quantityInput.value);
+    var maxValue = parseInt(quantityInput.max);
+    if (currentValue < maxValue) {
+        quantityInput.value = currentValue + 1;
+        hiddenQty.value = currentValue + 1;
+        updateQuantityDisplay();
+    }
+}
+
+function decrementQuantity() {
+    var quantityInput = document.getElementById('quantity');
+    var hiddenQty = document.getElementById('hidden_qty');
+    var currentValue = parseInt(quantityInput.value);
+    var minValue = parseInt(quantityInput.min);
+    if (currentValue > minValue) {
+        quantityInput.value = currentValue - 1;
+        hiddenQty.value = currentValue - 1;
+        updateQuantityDisplay();
+    }
+}
+
+function updateQuantityDisplay() {
+    // Add visual feedback for quantity changes
+    const quantityInput = document.getElementById('quantity');
+    quantityInput.style.transform = 'scale(1.1)';
+    setTimeout(() => {
+        quantityInput.style.transform = 'scale(1)';
+    }, 150);
+}
+
+function buyNow() {
+    // Add to cart and redirect to checkout
+    const form = document.querySelector('form[action="{% url "add_to_cart" %}"]');
+    const formData = new FormData(form);
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    }).then(() => {
+        window.location.href = '{% url "checkout" %}';
+    });
+}
+
+document.getElementById('quantity').addEventListener('change', function() {
+    document.getElementById('hidden_qty').value = this.value;
+    updateQuantityDisplay();
+});
+
+// Image zoom effect
+document.getElementById('mainImage').addEventListener('mouseover', function() {
+    this.style.transform = 'scale(1.05)';
+});
+
+document.getElementById('mainImage').addEventListener('mouseout', function() {
+    this.style.transform = 'scale(1)';
+});
+
+// Add to cart success animation
+document.querySelector('form[action="{% url "add_to_cart" %}"]').addEventListener('submit', function(e) {
+    const button = this.querySelector('button[type="submit"]');
+    const originalText = button.innerHTML;
+    
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+    button.disabled = true;
+    
+    // Re-enable after form submission
+    setTimeout(() => {
+        button.innerHTML = '<i class="fas fa-check me-2"></i>Added!';
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }, 1000);
+    }, 500);
+});
+</script>
+
+{% endblock %}
